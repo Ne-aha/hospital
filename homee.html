@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html ng-app="hospitalApp">
+<head>
+    <title>LIFE SAVER HOSPITAL</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('bg.webp'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center center; 
+    background-attachment: fixed;
+        }
+
+        header {
+      background: #007bff;
+      color: rgb(0, 0, 0);
+      padding: 15px 0;
+      text-align: center;
+      margin: 0;
+    }
+
+    
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2em;
+      transition: color 0.3s;
+    }
+
+
+        nav ul li a:hover {
+            color: #ffcc00; /* Highlight color on hover */
+        }
+
+        .container {
+            padding: 20px;
+            background: white;
+            margin: 20px auto; /* Center the container */
+            border-radius: 8px; /* Add slight rounding */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+
+        .filter-container {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 400px; 
+        }
+
+        .card img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .speciality {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .experience, .fees {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .fees {
+            font-weight: bold;
+        }
+
+        .btn {
+            background-color: #f8b5b5;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #e07a7a;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-controller="MainController as main">
+    <header>
+        <h1>LIFE SAVER HOSPITAL</h1>
+        <nav>
+            <ul>
+                <li><a href="homee.html">Home</a></li>
+                <li><a href="find_a_doctor.html">Find a Doctor</a></li>
+                <li><a href="doctors_form.html">Register as a Doctor</a></li>
+                <li><a href="meds.html">Medication</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
+                <li><a href="loc.html">Location</a></li>
+            </ul>
+        </nav>
+        
+    </header>
+
+    <div class="container" ng-view></div>
+</div>
+
+</body>
+</html>

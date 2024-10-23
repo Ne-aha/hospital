@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Profiles</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-image: url('bg.webp'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center center; 
+    background-attachment: fixed;
+    }
+    
+    header {
+      background: #007bff;
+      color: rgb(0, 0, 0);
+      padding: 15px 0;
+      text-align: center;
+      margin: 0;
+    }
+
+    
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2em;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+      color: #ffcc00; 
+    }
+
+    .filter-container {
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center; /* Center cards */
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      padding: 20px;
+      margin: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 400px; 
+    }
+    .card-header{
+        display: flex;
+      align-items: center; /* Center the image and name vertically */
+      margin-bottom: 15px;
+    }
+
+    .card img {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .speciality {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 15px;
+    }
+
+    .experience, .fees {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    .fees {
+      font-weight: bold;
+    }
+
+    .btn {
+      background-color: #f8b5b5;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #e07a7a;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LIFE SAVER HOSPITAL</h1>
+    <nav>
+      <ul>
+          <li><a href="homee.html">Home</a></li>
+          <li><a href="find_a_doctor.html">Find a Doctor</a></li>
+          <li><a href="doctors_form.html">Register as a Doctor</a></li>
+          <li><a href="meds.html">Medication</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="loc.html">Location</a></li>
+      </ul>
+  </nav>
+  </header>
+
+  <div ng-app="doctorApp" ng-controller="doctorController">
+    <!-- Filter Dropdown -->
+    <div class="filter-container">
+      <label for="specialityFilter">Filter by Speciality: </label>
+      <select id="specialityFilter" ng-model="selectedSpeciality">
+        <option value="">All</option>
+        <option value="Diabetology/Endocrinology">Diabetology/Endocrinology</option>
+        <option value="Cardiac Sciences">Cardiac Sciences</option>
+        <option value="Gastroenterology and Hepatobiliary Sciences">Gastroenterology and Hepatobiliary Sciences</option>
+        <option value="Paediatrics">Paediatrics</option>
+      </select>
+    </div>
+
+    <!-- Doctor Profiles -->
+    <div class="container">
+      <div class="card" ng-repeat="doctor in doctors | filter:{speciality: selectedSpeciality}">
+        <div class="card-header">
+        <img ng-src="{{doctor.image}}" alt="{{doctor.name}}">
+        <div class="card-title">{{doctor.name}}</div>
+        </div>
+        <div class="speciality">{{doctor.speciality}}</div>
+        <div class="experience">🗓 {{doctor.experience}} Years Experience</div>
+        <div class="fees">₹ {{doctor.fees}}</div>
+        <a href="#" class="btn" >Book An Appointment</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script>
+    var app = angular.module('doctorApp', []);
+    app.controller('doctorController', function($scope) {
+      $scope.selectedSpeciality = ''; // Initialize with no filter
+
+      $scope.doctors = [
+        {
+          name: 'Dr. Anoop Misra',
+          speciality: 'Diabetology/Endocrinology',
+          experience: 40,
+          fees: 2500,
+          image: 'doc4.avif'
+        },
+        {
+          name: 'Dr. Ajay Kaul',
+          speciality: 'Cardiac Sciences',
+          experience: 38,
+          fees: 1600,
+          image: 'doc5.avif'
+        },
+        {
+          name: 'Dr. Ashok Seth',
+          speciality: 'Cardiac Sciences - Interventional Cardiology',
+          experience: 40,
+          fees: 5000,
+          image: 'doc6.jpeg'
+        },
+        {
+          name: 'Dr. Gourdas Choudhuri',
+          speciality: 'Gastroenterology and Hepatobiliary Sciences',
+          experience: 42,
+          fees: 2000,
+          image: 'doc7.avif'
+        },
+        {
+          name: 'Dr. Krishna Subramony Iyer',
+          speciality: 'Paediatrics',
+          experience: 40,
+          fees: 1500,
+          image: 'doc8.jpeg'
+        },
+        {
+          name: 'Dr. Rana Patir',
+          speciality: 'Diabetology/Endocrinology',
+          experience: 32,
+          fees: 1500,
+          image: 'doc3.avif'
+        },
+        {
+          name: 'Dr. Vinita Raina',
+          speciality: 'Paediatrics',
+          experience: 20,
+          fees: 2000,
+          image: 'doc2.jpeg'
+        },
+        {
+          name: 'Dr. Suhani Mathur',
+          speciality: 'Gastroenterology and Hepatobiliary Sciences',
+          experience: 25,
+          fees: 1600,
+          image: 'doc9.jpeg'
+        }
+      ];
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="medApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Page</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('bg.webp'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center center; 
+    background-attachment: fixed;
+}
+
+header {
+    background: #007bff;
+    color: rgb(0, 0, 0);
+    padding: 15px 0;
+    text-align: center;
+    margin: 0;
+    
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    text-decoration: none; 
+}
+
+nav ul li {
+    margin: 0 15px;
+    text-decoration: none; 
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none; 
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #e1e1e1; 
+    text-decoration: none; 
+}
+
+.container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+h2, h3 {
+    color: #0e0c0c;
+    margin-bottom: 10px;
+}
+
+select, input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fafafa;
+}
+
+input[type="number"]:focus, input[type="text"]:focus, select:focus {
+    border-color: #66afe9;
+    outline: none;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.bill {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.bill h3 {
+    color: #e74c3c;
+}
+
+.payment-section {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fafafa;
+    transition: background 0.3s;
+}
+
+.payment-option:hover {
+    background: #e1e1e1;
+}
+
+.credentials {
+    margin-top: 10px;
+    display: none;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+}
+
+.pay-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.pay-button:hover {
+    background-color: #0056b3;
+}
+.payment-logo {
+    width: 50px;   
+    height: 50px; 
+    margin: 5px;   
+}
+  </style>
+
+</head>
+<body ng-controller="MedController">
+
+<header>
+    <h1>LIFE SAVER HOSPITAL</h1>
+    <nav>
+        <ul>
+            <li><a href="homee.html">Home</a></li>
+            <li><a href="find_a_doctor.html">Find a Doctor</a></li>
+            <li><a href="doctors_form.html">Register as a Doctor</a></li>
+            <li><a href="meds.html">Medication</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="loc.html">Location</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <h1>Medication List</h1>
+
+    <label for="specialization">Select Specialization:</label>
+    <select id="specialization" ng-model="selectedSpecialization" ng-change="updateDiagnoses()">
+        <option value="">--Select--</option>
+        <option ng-repeat="specialization in specializations" value="{{specialization.name}}">
+            {{specialization.name}}
+        </option>
+    </select>
+
+    <label for="diagnosis">Select Diagnosis:</label>
+    <select id="diagnosis" ng-model="selectedDiagnosis" ng-change="updateMedicines()">
+        <option value="">--Select--</option>
+        <option ng-repeat="diagnosis in filteredDiagnoses" value="{{diagnosis.name}}">
+            {{diagnosis.name}}
+        </option>
+    </select>
+
+    <div ng-if="selectedDiagnosis">
+        <h2>Medicines for {{selectedDiagnosis}}</h2>
+        <ul>
+            <li ng-repeat="medicine in filteredMedicines">
+                {{medicine.name}} (Dosage: {{medicine.dosage}})
+                <input type="number" ng-model="medicine.quantity" ng-change="calculateBill()" min="0" placeholder="Quantity" />
+                <span ng-if="medicine.quantity">Total: {{ medicine.price * medicine.quantity | currency:'₹':2 }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="bill">
+        <h3>Total Bill: {{ totalAmount | currency:'₹':2 }}</h3>
+    </div>
+
+    <div class="payment-section">
+        <h3>Select Payment Mode:</h3>
+        <div class="payment-option" ng-click="selectPaymentMode('Credit Card')">
+            <img src="cc.png" alt="Credit Card" class="payment-logo"> Credit Card
+        </div>
+        <div class="payment-option" ng-click="selectPaymentMode('Debit Card')">
+            <img src="dc.png" alt="Debit Card" class="payment-logo"> Debit Card
+        </div>
+        <div class="payment-option" ng-click="selectPaymentMode('UPI')">
+            <img src="UPI.png" alt="UPI" class="payment-logo"> UPI
+        </div>
+        <div class="payment-option" ng-click="selectPaymentMode('Net Banking')">
+            <img src="nb.png" alt="Net Banking" class="payment-logo"> Net Banking
+        </div>
+    </div>
+
+    <div class="credentials" ng-if="selectedPaymentMode">
+        <h4>Credentials for {{selectedPaymentMode}}:</h4>
+        <div ng-if="selectedPaymentMode === 'Credit Card'">
+            <label>Card Number:</label>
+            <input type="text" ng-model="creditCard.number" placeholder="Enter card number" />
+            <span class="error" ng-if="!isCreditCardValid()">Invalid card number</span>
+            <label>Expiration Date:</label>
+            <input type="text" ng-model="creditCard.expiration" placeholder="MM/YY" />
+            <span class="error" ng-if="!isExpirationValid()">Invalid expiration date</span>
+            <label>CVV:</label>
+            <input type="text" ng-model="creditCard.cvv" placeholder="Enter CVV" />
+            <span class="error" ng-if="!isCVVValid()">Invalid CVV</span>
+        </div>
+        <div ng-if="selectedPaymentMode === 'Debit Card'">
+            <label>Card Number:</label>
+            <input type="text" ng-model="debitCard.number" placeholder="Enter card number" />
+            <span class="error" ng-if="!isDebitCardValid()">Invalid card number</span>
+            <label>Expiration Date:</label>
+            <input type="text" ng-model="debitCard.expiration" placeholder="MM/YY" />
+            <span class="error" ng-if="!isExpirationValid()">Invalid expiration date</span>
+            <label>CVV:</label>
+            <input type="text" ng-model="debitCard.cvv" placeholder="Enter CVV" />
+            <span class="error" ng-if="!isCVVValid()">Invalid CVV</span>
+        </div>
+        <div ng-if="selectedPaymentMode === 'UPI'">
+            <label>UPI ID:</label>
+            <input type="text" ng-model="upi.id" placeholder="Enter your UPI ID" />
+            <span class="error" ng-if="!isUPIValid()">Invalid UPI ID</span>
+        </div>
+        <div ng-if="selectedPaymentMode === 'Net Banking'">
+            <label>Bank Account Number:</label>
+            <input type="text" ng-model="netBanking.accountNumber" placeholder="Enter account number" />
+            <label>IFSC Code:</label>
+            <input type="text" ng-model="netBanking.ifsc" placeholder="Enter IFSC code" />
+        </div>
+        <button class="pay-button" ng-click="pay()" ng-disabled="!isPaymentValid()">Pay</button>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script>
+    angular.module('medApp', [])
+    .controller('MedController', function($scope) {
+        $scope.specializations = [
+            { name: 'Neurology', diagnoses: [
+                { name: 'Migraine', medicines: [
+                    { name: 'Sumatriptan', dosage: '50mg', price: 10 },
+                    { name: 'Rizatriptan', dosage: '10mg', price: 9 },
+                    { name: 'Naratriptan', dosage: '2.5mg', price: 12 },
+                    { name: 'Ergotamine', dosage: '2mg', price: 7 },
+                    { name: 'Zolmitriptan', dosage: '2.5mg', price: 11 }
+                ]},
+                { name: 'Seizures', medicines: [
+                    { name: 'Levetiracetam', dosage: '500mg', price: 6 },
+                    { name: 'Phenytoin', dosage: '100mg', price: 5 },
+                    { name: 'Lamotrigine', dosage: '100mg', price: 8 },
+                    { name: 'Valproate', dosage: '500mg', price: 10 },
+                    { name: 'Carbamazepine', dosage: '200mg', price: 7 },
+                    { name: 'Topiramate', dosage: '100mg', price: 9 }
+                ]}
+            ]},
+            { name: 'Pulmonology', diagnoses: [
+                { name: 'Cold', medicines: [
+                    { name: 'Antihistamine', dosage: '10mg', price: 7 },
+                    { name: 'Cough Syrup', dosage: '5ml', price: 6 },
+                    { name: 'Decongestant', dosage: '30mg', price: 4 },
+                    { name: 'Guaifenesin', dosage: '100mg', price: 5 },
+                    { name: 'Phenylephrine', dosage: '10mg', price: 3 },
+                    { name: 'Zinc Lozenges', dosage: '15mg', price: 2 }
+                ]},
+                { name: 'Asthma', medicines: [
+                    { name: 'Albuterol', dosage: '90mcg', price: 10 },
+                    { name: 'Montelukast', dosage: '10mg', price: 8 },
+                    { name: 'Fluticasone', dosage: '125mcg', price: 12 },
+                    { name: 'Budesonide', dosage: '200mcg', price: 9 },
+                    { name: 'Theophylline', dosage: '100mg', price: 7 },
+                    { name: 'Levalbuterol', dosage: '45mcg', price: 11 }
+                ]},
+                { name: 'Pneumonia', medicines: [
+                    { name: 'Azithromycin', dosage: '500mg', price: 15 },
+                    { name: 'Amoxicillin', dosage: '500mg', price: 8 },
+                    { name: 'Ciprofloxacin', dosage: '500mg', price: 10 },
+                    { name: 'Doxycycline', dosage: '100mg', price: 12 },
+                    { name: 'Levofloxacin', dosage: '750mg', price: 14 },
+                    { name: 'Clindamycin', dosage: '300mg', price: 9 }
+                ]}
+            ]},
+            { name: 'Diabetology', diagnoses: [
+                { name: 'Type 2 Diabetes', medicines: [
+                    { name: 'Metformin', dosage: '500mg', price: 4 },
+                    { name: 'Glyburide', dosage: '5mg', price: 5 },
+                    { name: 'Insulin Glargine', dosage: '100 units/ml', price: 15 },
+                    { name: 'Dapagliflozin', dosage: '10mg', price: 10 },
+                    { name: 'Sitagliptin', dosage: '100mg', price: 12 },
+                    { name: 'Pioglitazone', dosage: '15mg', price: 8 }
+                ]},
+                { name: 'Gestational Diabetes', medicines: [
+                    { name: 'Insulin Aspart', dosage: '100 units/ml', price: 15 },
+                    { name: 'Glyburide', dosage: '5mg', price: 5 },
+                    { name: 'Metformin', dosage: '500mg', price: 4 },
+                    { name: 'Insulin Lispro', dosage: '100 units/ml', price: 14 },
+                    { name: 'Glimepiride', dosage: '1mg', price: 6 },
+                    { name: 'Acarbose', dosage: '50mg', price: 7 }
+                ]}
+            ]},
+            { name: 'Cardiac Sciences', diagnoses: [
+                { name: 'Coronary Artery Disease', medicines: [
+                    { name: 'Atorvastatin', dosage: '40mg', price: 6 },
+                    { name: 'Clopidogrel', dosage: '75mg', price: 5 },
+                    { name: 'Aspirin', dosage: '81mg', price: 3 },
+                    { name: 'Metoprolol', dosage: '50mg', price: 7 },
+                    { name: 'Ramipril', dosage: '10mg', price: 8 },
+                    { name: 'Simvastatin', dosage: '20mg', price: 9 }
+                ]}
+            ]},
+            { name: 'Pediatrics', diagnoses: [
+                { name: 'Ear Infection', medicines: [
+                    { name: 'Amoxicillin', dosage: '500mg', price: 7 },
+                    { name: 'Cefdinir', dosage: '300mg', price: 10 },
+                    { name: 'Azithromycin', dosage: '250mg', price: 12 },
+                    { name: 'Amoxicillin/Clavulanate', dosage: '400/57mg', price: 14 },
+                    { name: 'Nafcillin', dosage: '1g', price: 9 },
+                    { name: 'Ciprofloxacin', dosage: '500mg', price: 11 }
+                ]},
+                { name: 'Allergies', medicines: [
+                    { name: 'Cetirizine', dosage: '10mg', price: 5 },
+                    { name: 'Loratadine', dosage: '10mg', price: 6 },
+                    { name: 'Fexofenadine', dosage: '180mg', price: 7 },
+                    { name: 'Diphenhydramine', dosage: '25mg', price: 4 },
+                    { name: 'Desloratadine', dosage: '5mg', price: 3 },
+                    { name: 'Budesonide', dosage: '200mcg', price: 8 }
+                ]},
+                { name: 'Fever', medicines: [
+                    { name: 'Ibuprofen', dosage: '100mg', price: 3 },
+                    { name: 'Acetaminophen', dosage: '160mg/5ml', price: 4 },
+                    { name: 'Paracetamol', dosage: '500mg', price: 5 },
+                    { name: 'Aspirin', dosage: '325mg', price: 2 },
+                    { name: 'Naproxen', dosage: '250mg', price: 4 },
+                    { name: 'Diphenhydramine', dosage: '25mg', price: 3 }
+                ]}
+            ]}
+        ];
+
+        $scope.updateDiagnoses = function() {
+            const selected = $scope.specializations.find(s => s.name === $scope.selectedSpecialization);
+            $scope.filteredDiagnoses = selected ? selected.diagnoses : [];
+            $scope.selectedDiagnosis = null; // Reset diagnosis
+            $scope.filteredMedicines = [];
+        };
+
+        $scope.updateMedicines = function() {
+            const selected = $scope.filteredDiagnoses.find(d => d.name === $scope.selectedDiagnosis);
+            $scope.filteredMedicines = selected ? selected.medicines : [];
+            $scope.filteredMedicines.forEach(medicine => medicine.quantity = 0);
+            $scope.calculateBill();
+        };
+
+        $scope.calculateBill = function() {
+            $scope.totalAmount = 0;
+            $scope.filteredMedicines.forEach(medicine => {
+                if (medicine.quantity) {
+                    $scope.totalAmount += medicine.price * medicine.quantity;
+                }
+            });
+        };
+
+        $scope.selectPaymentMode = function(mode) {
+            $scope.selectedPaymentMode = mode;
+            document.querySelector('.credentials').style.display = 'block'; // Show credentials
+        };
+
+        $scope.isCardValid = function(card) {
+            return card.number && card.expiration && card.cvv && /^\d{16}$/.test(card.number) && /^\d{2}\/\d{2}$/.test(card.expiration) && /^\d{3}$/.test(card.cvv);
+        };
+
+        $scope.isUPIValid = function() {
+            return $scope.upi.id && $scope.upi.id.includes('@') && $scope.upi.id.length > 5; // Simple UPI validation
+        };
+
+        $scope.isPaymentValid = function() {
+            if ($scope.selectedPaymentMode === 'Credit Card') {
+                return $scope.isCardValid($scope.creditCard);
+            } else if ($scope.selectedPaymentMode === 'Debit Card') {
+                return $scope.isCardValid($scope.debitCard);
+            } else if ($scope.selectedPaymentMode === 'UPI') {
+                return $scope.isUPIValid();
+            } else if ($scope.selectedPaymentMode === 'Net Banking') {
+                return $scope.netBanking.accountNumber && $scope.netBanking.ifsc; // Basic validation
+            }
+            return false;
+        };
+
+        $scope.pay = function() {
+            if ($scope.isPaymentValid()) {
+                alert("Payment successful!");
+                // Further payment processing logic goes here
+            } else {
+                alert("Please fill in valid payment details.");
+            }
+        };
+
+        $scope.filteredMedicines = [];
+        $scope.filteredDiagnoses = [];
+        $scope.totalAmount = 0; 
+        $scope.selectedPaymentMode = ''; 
+        $scope.creditCard = {};
+        $scope.debitCard = {};
+        $scope.upi = {};
+        $scope.netBanking = {};
+    });
+</script>
+</body>
+</html>

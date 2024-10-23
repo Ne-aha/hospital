@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="doctorApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('bg.webp'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center center; 
+    background-attachment: fixed;
+        }
+
+        header {
+            background: #007bff;
+            color: rgb(0, 0, 0);
+            padding: 15px 0;
+            text-align: center;
+            margin: 0;
+            
+        }
+
+        nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2em;
+      transition: color 0.3s;
+    }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        
+
+        form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        h2, h3, h4 {
+            color: #333;
+            margin: 12px 0;
+            background: lightskyblue;
+            color: white;
+            padding: 10px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="text"], input[type="date"], input[type="email"], input[type="number"], select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-controller="FormController">
+    <header>
+        <h1>LIFE SAVER HOSPITAL</h1>
+        <nav>
+            <ul>
+                <li><a href="homee.html">Home</a></li>
+                <li><a href="find_a_doctor.html">Find a Doctor</a></li>
+                <li><a href="doctors_form.html">Register as a Doctor</a></li>
+                <li><a href="meds.html">Medication</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
+                <li><a href="loc.html">Location</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Doctor's Information</h1>
+
+    <form name="doctorForm" novalidate ng-submit="submitForm()">
+        <div>
+            <h2>Doctor's Personal Information:</h2>
+            <label for="fullname">Full Name:</label>
+            <input type="text" id="fullname" name="fullname" ng-model="doctor.fullname" placeholder="Full Name" ng-pattern="/^[a-zA-Z ]+$/" required />
+            <span class="error" ng-show="doctorForm.fullname.$touched && doctorForm.fullname.$invalid">Full Name is required.</span>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" ng-model="doctor.dob" required />
+            <span class="error" ng-show="doctorForm.dob.$touched && doctorForm.dob.$invalid">Date of Birth is required.</span>
+
+            <label>Gender:</label>
+            <input type="radio" id="male" name="gender" ng-model="doctor.gender" value="male" required />
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" ng-model="doctor.gender" value="female" required />
+            <label for="female">Female</label>
+            <span class="error" ng-show="doctorForm.gender.$touched && doctorForm.gender.$invalid">Gender is required.</span>
+
+            <label for="nationality">Nationality:</label>
+            <input type="text" id="nationality" name="nationality" ng-model="doctor.nationality" placeholder="Nationality" required />
+            <span class="error" ng-show="doctorForm.nationality.$touched && doctorForm.nationality.$invalid">Nationality is required.</span>
+        </div>
+
+        <div>
+            <h3>Contact Information:</h3>
+            <label for="contact">Contact Number:</label>
+            <input type="text" id="contact" name="contact" ng-model="doctor.contact" placeholder="(00000-00000)" pattern="\d{5}-\d{5}" required />
+            <span class="error" ng-show="doctorForm.contact.$touched && doctorForm.contact.$invalid">Contact Number must be in the format 00000-00000.</span>
+
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" ng-model="doctor.email" placeholder="abc@xyz.com" required />
+            <span class="error" ng-show="doctorForm.email.$touched && doctorForm.email.$invalid">A valid Email ID is required.</span>
+
+            <label for="address1">Residence Address Line 1:</label>
+            <input type="text" id="address1" name="address1" ng-model="doctor.address1" placeholder="Address Line 1" required/>
+
+            <label for="address2">Residence Address Line 2:</label>
+            <input type="text" id="address2" name="address2" ng-model="doctor.address2" placeholder="Address Line 2" />
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" ng-model="doctor.city" placeholder="City" required />
+
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" ng-model="doctor.state" placeholder="State" required />
+
+            <label for="zip">Zip Code:</label>
+            <input type="text" id="zip" name="zip" ng-model="doctor.zip" placeholder="Zip Code" pattern="\d{3}(-\d{3})?" required />
+            <span class="error" ng-show="doctorForm.zip.$touched && doctorForm.zip.$invalid">Zip Code must be in the format 000-000.</span>
+
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" ng-model="doctor.country" placeholder="Country" required />
+        </div>
+
+        <div>
+            <h4>Professional Information:</h4>
+            <label for="license">License Number:</label>
+            <input type="text" id="license" name="license" ng-model="doctor.license" placeholder="License Number" required />
+            <span class="error" ng-show="doctorForm.license.$touched && doctorForm.license.$invalid">License Number is required.</span>
+
+            <label for="specialty">Choose Your Area of Specialty:</label>
+            <select name="specialty" id="specialty" ng-model="doctor.specialty" required>
+                <option value="">Select Specialty</option>
+                <option value="pediatrician">Pediatrician</option>
+                <option value="oncologist">Oncologist</option>
+                <option value="psychiatrist">Psychiatrist</option>
+                <option value="dermatologist">Dermatologist</option>
+                <option value="gynaecologist">Gynaecologist</option>
+            </select>
+            <span class="error" ng-show="doctorForm.specialty.$touched && doctorForm.specialty.$invalid">Specialty is required.</span>
+
+            <label for="school">Medical School:</label>
+            <input type="text" id="school" name="school" ng-model="doctor.school" placeholder="Medical School" required />
+            <span class="error" ng-show="doctorForm.school.$touched && doctorForm.school.$invalid">Medical School is required.</span>
+
+            <label for="experience">Years of Experience:</label>
+            <input type="number" id="experience" name="experience" ng-model="doctor.experience" placeholder="Years of Experience" min="0" required />
+            <span class="error" ng-show="doctorForm.experience.$touched && doctorForm.experience.$invalid">Years of Experience is required.</span>
+        </div>
+
+        <div>
+            <h4>Educational Background:</h4>
+            <label for="degree">List of Degrees and Qualifications:</label>
+            <input type="text" id="degree" name="degree" ng-model="doctor.degree" placeholder="List of Degrees and Qualifications" required />
+            <span class="error" ng-show="doctorForm.degree.$touched && doctorForm.degree.$invalid">Degrees and Qualifications are required.</span>
+
+            <label for="institution">Institutions Attended:</label>
+            <input type="text" id="institution" name="institution" ng-model="doctor.institution" placeholder="Institutions Attended" required />
+            <span class="error" ng-show="doctorForm.institution.$touched && doctorForm.institution.$invalid">Institutions Attended are required.</span>
+        </div>
+
+        <div>
+            <h4>In Case of Emergency Notify:</h4>
+            <label for="emergency-name">Full Name:</label>
+            <input type="text" id="emergency-name" name="emergency-name" ng-model="doctor.emergencyName" placeholder="Full Name" required />
+
+            <label for="emergency-contact">Contact Number:</label>
+            <input type="text" id="emergency-contact" name="emergencyContact" ng-model="doctor.emergencyContact" placeholder="Phone Number" pattern="\d{10}" required />
+            <span class="error" ng-show="doctorForm.emergencyContact.$touched && doctorForm.emergencyContact.$invalid">Emergency Contact Number must be 10 digits.</span>
+
+            <label for="relationship">Relationship:</label>
+            <input type="text" id="relationship" name="relationship" ng-model="doctor.relationship" placeholder="Relationship with the Doctor" required />
+            <span class="error" ng-show="doctorForm.relationship.$touched && doctorForm.relationship.$invalid">Relationship is required.</span>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        angular.module('doctorApp', [])
+            .controller('FormController', ['$scope', function($scope) {
+                $scope.doctor = {};
+
+                $scope.submitForm = function() {
+                    if ($scope.doctorForm.$valid) {
+                        alert('Form submitted successfully!');
+                    } else {
+                        alert('Please fill out the form correctly.');
+                    }
+                };
+            }]);
+    </script>
+</body>
+</html>
